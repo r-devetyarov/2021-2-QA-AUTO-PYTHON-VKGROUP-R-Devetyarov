@@ -28,7 +28,7 @@ class TestUi:
     @pytest.mark.parametrize("locator, excepted_uri_path",
                              [
                                  (BasePageLocators.SEGMENTS_BUTTON, "/segments/segments_list"),
-                                 (BasePageLocators.BALANCE_BUTTON, "/billing#deposit"),
+                                 (BasePageLocators.BALANCE_BUTTON, "/billing"),
                                  (BasePageLocators.STATISTICS_BUTTON, "/statistics/summary"),
                              ])
     @pytest.mark.UI
