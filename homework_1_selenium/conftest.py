@@ -1,19 +1,19 @@
 import pytest
 from selenium import webdriver
 
-from base_page import BasePage
-from login_page import LoginPage
-from profile_page import ProfilePage
 from test_constants import TestConstants
+from ui_pages.pages.base_page import BasePage
+from ui_pages.pages.login_page import LoginPage
+from ui_pages.pages.profile_page import ProfilePage
 
 
 @pytest.fixture(scope="function")
 def driver() -> webdriver:
-    driver = webdriver.Chrome(executable_path=TestConstants.PATH_TO_DRIER_CHROME)
+    driver = webdriver.Chrome(executable_path=TestConstants.PATH_TO_DRIVER_CHROME)
     driver.maximize_window()
     driver.get(TestConstants.URL_TEST)
     yield driver
-    driver.close()
+    driver.quit()
 
 
 @pytest.fixture(scope="function")
