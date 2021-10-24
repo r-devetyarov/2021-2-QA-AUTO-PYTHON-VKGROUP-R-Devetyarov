@@ -3,7 +3,7 @@ from random import randint
 import pytest
 
 from test_constants import TestConstants
-from ui_pages.locators.locators import BasePageLocators
+from ui_pages.locators.locators import BasePageLocators, LoginPageLocators
 
 
 class TestUi:
@@ -15,7 +15,8 @@ class TestUi:
     @pytest.mark.UI
     def test_logout(self, login, base_page):
         base_page.logout()
-        assert base_page.driver.current_url.startswith(f"{TestConstants.URL_TEST}/")
+        assert base_page.driver.current_url == f"{TestConstants.URL_TEST}/"
+        assert base_page.element_is_presence(LoginPageLocators.TO_COME_BUTTON)
 
     @pytest.mark.UI
     @pytest.mark.usefixtures("login")
