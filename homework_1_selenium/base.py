@@ -44,3 +44,10 @@ class Base:
 
     def wait(self, timeout=TIMEOUT):
         return WebDriverWait(self.driver, timeout=timeout)
+
+    def element_is_presence(self, locator: Tuple[By, str], timeout: int = 3) -> bool:
+        try:
+            self.wait(timeout=timeout).until(EC.presence_of_element_located(locator))
+            return True
+        except TimeoutException:
+            return False
