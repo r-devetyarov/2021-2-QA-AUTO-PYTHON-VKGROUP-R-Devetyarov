@@ -1,2 +1,8 @@
-selenium~=3.141.0
-pytest~=6.2.5
+pytest==6.2.5
+pytest-xdist==2.4.0
+selenium==4.0.0a5
+allure-pytest==2.8.32
+allure-python-commons==2.8.32
+webdriver-manager==3.3.0
+Faker==9.8.0
+pillow
