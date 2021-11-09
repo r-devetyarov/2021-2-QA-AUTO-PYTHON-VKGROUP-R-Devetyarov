@@ -1,5 +1,6 @@
 import logging
 import os
+from collections import namedtuple
 from json import JSONDecodeError
 from typing import Dict, List, Union, Optional, Any
 from urllib.parse import urljoin
@@ -127,16 +128,11 @@ class ApiBase:
             data=data,
         )
         response = self._request("GET", "gettoken/", expected_status=404, jsonify=False)
-        csrf_token = [
-            header
-            for header in response.headers["Set-Cookie"].split(";")
-            if "csrftoken" in header
-        ][0]
-        if len(csrf_token) == 0:
+        csrf_token = response.cookies.get("csrftoken")
+        if csrf_token is None:
             raise GetCsrfTokenError(
                 f"Doesn't have csrf token in cookies: {response.headers['Set-Cookie']}"
             )
-        csrf_token = csrf_token.split("=")[-1]
         if set_session:
             self.headers["X-CSRFToken"] = csrf_token
 
@@ -157,7 +153,7 @@ class ApiBase:
             segment_name: str = f"New segment {fake.lexify(text='???????#???#???')}",
             pass_condition: int = 1,
             object_type: str = "remarketing_player",
-    ) -> str:
+    ):
         payload = {
             "name": f"{segment_name}",
             "pass_condition": pass_condition,
@@ -172,17 +168,11 @@ class ApiBase:
         response = self._request(
             "POST", path=self.path.GET_OR_POST_SEGMENTS, json=payload
         )
-        all_segments = self.get_all_segments()
-        segment = [
-            segment for segment in all_segments if response["id"] == segment["id"]
-        ]
-        assert segment
-        assert segment[0]["name"] == segment_name
-        assert segment[0]["pass_condition"] == pass_condition
-        return response["id"]
+        return namedtuple("SEGMENT", ["id", "pass_condition", "name"])(response["id"], pass_condition,
+                                                                       segment_name)
 
     @allure.step("API: delete segment with id {segment_id}")
-    def delete_segment(self, segment_id: str):
+    def delete_segment(self, segment_id: str) -> None:
         logger.info(f"Delete segment with id {segment_id}")
         self._request(
             "DELETE",
@@ -191,7 +181,6 @@ class ApiBase:
             expected_status=204,
             jsonify=False,
         )
-        assert int(segment_id) not in [segment["id"] for segment in self.get_all_segments()], "Segment not deleted"
 
     def gel_all_campaigns(self, status_filer: str = None) -> List[Dict]:
         """"
@@ -223,7 +212,7 @@ class ApiBase:
     def create_company(
             self,
             payload: Optional[Dict[str, Union[None, str, int, List, Dict]]] = None,
-            campaign_name: str = f"111111_New company {fake.lexify(text='???????#???#???')}",
+            campaign_name: str = f"New company {fake.lexify(text='???????#???#???')}",
     ) -> int:
         if payload is None:
             pass
@@ -284,14 +273,10 @@ class ApiBase:
         response = self._request(
             "POST", path=self.path.GET_CAMPAIGNS_LIST, json=payload
         )
-        assert "id" in response
-        campaign_id = response["id"]
-
-        all_campaigns = self.gel_all_campaigns()
-        assert campaign_id in [campaign["id"] for campaign in all_campaigns]
-        assert payload["name"] in [campaign["name"] for campaign in all_campaigns]
-
-        return campaign_id
+        if "id" not in response:
+            raise ResponseErrorException(f"key: id not in response: {response.json()}")
+        else:
+            return namedtuple("CAMPAIGN", ["id", "name"])(response["id"], payload["name"])
 
     def delete_campaign(self, campaign_id: int) -> None:
         payload = [{"id": campaign_id, "status": "deleted"}]
@@ -300,5 +285,9 @@ class ApiBase:
                       json=payload,
                       jsonify=False,
                       expected_status=204)
-        assert campaign_id not in [campaign["id"] for campaign in self.gel_all_campaigns(status_filer="active")]
-        assert campaign_id in [campaign["id"] for campaign in self.gel_all_campaigns(status_filer="deleted")]
+
+        if not campaign_id not in [campaign["id"] for campaign in self.gel_all_campaigns(status_filer="active")] \
+                or campaign_id not in [campaign["id"] for campaign in self.gel_all_campaigns(status_filer="deleted")]:
+            raise ResponseErrorException(
+                f"Campaign with id {campaign_id} not deleted\n"
+                f"all deleted campaign {self.gel_all_campaigns(status_filer='deleted')}")

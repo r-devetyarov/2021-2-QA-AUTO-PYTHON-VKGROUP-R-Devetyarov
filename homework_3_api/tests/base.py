@@ -13,12 +13,12 @@ class ApiBase:
 
     @pytest.fixture
     def create_new_segment(self):
-        segment_id = self.api_client.create_segment()
-        yield
-        self.api_client.delete_segment(segment_id)
+        segment = self.api_client.create_segment()
+        yield segment
+        self.api_client.delete_segment(segment.id)
 
     @pytest.fixture
     def create_new_campaign(self):
-        campaign_id = self.api_client.create_company()
-        yield
-        self.api_client.delete_campaign(campaign_id)
+        campaign = self.api_client.create_company()
+        yield campaign
+        self.api_client.delete_campaign(campaign.id)

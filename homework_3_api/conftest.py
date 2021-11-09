@@ -11,29 +11,15 @@ from constants import Constants
 
 
 def pytest_addoption(parser):
-    parser.addoption('--browser', default='chrome')
     parser.addoption('--url', default=Constants.URL_TEST)
-    parser.addoption('--selenoid', action='store_true')
-    parser.addoption('--vnc', action='store_true')
     parser.addoption('--debug_log', action='store_true')
 
 
 @pytest.fixture(scope='session')
 def config(request) -> dict:
-    browser = request.config.getoption('--browser')
     url = request.config.getoption('--url')
     debug_log = request.config.getoption('--debug_log')
-    if request.config.getoption('--selenoid'):
-        selenoid = Constants.SELENOID_ADDRESS
-        if request.config.getoption('--vnc'):
-            vnc = True
-        else:
-            vnc = False
-    else:
-        selenoid = None
-        vnc = False
-
-    return {'browser': browser, 'url': url, 'debug_log': debug_log, 'selenoid': selenoid, 'vnc': vnc}
+    return {'url': url, 'debug_log': debug_log,}
 
 
 @pytest.fixture(scope='function')
