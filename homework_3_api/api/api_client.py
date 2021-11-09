@@ -131,7 +131,7 @@ class ApiBase:
         csrf_token = response.cookies.get("csrftoken")
         if csrf_token is None:
             raise GetCsrfTokenError(
-                f"Doesn't have csrf token in cookies: {response.headers['Set-Cookie']}"
+                f"Doesn't have csrf token in cookies: {response.cookies.get_dict()}"
             )
         if set_session:
             self.headers["X-CSRFToken"] = csrf_token
