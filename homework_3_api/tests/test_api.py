@@ -11,7 +11,7 @@ class TestApi(ApiBase):
     @pytest.mark.API
     def test_create_segment(self, create_new_segment):
         segment = create_new_segment
-        self.api_client.check_segment_created(segment)
+        assert self.api_client.check_segment_created(segment)
 
     @allure.title("Test delete segment")
     @pytest.mark.API
