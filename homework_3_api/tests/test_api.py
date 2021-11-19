@@ -11,25 +11,17 @@ class TestApi(ApiBase):
     @pytest.mark.API
     def test_create_segment(self, create_new_segment):
         segment = create_new_segment
-        all_segments = self.api_client.get_all_segments()
-        segments = [
-            item for item in all_segments if segment.id == item["id"]
-        ]
-        assert segments
-        assert segments[0]["name"] == segment.name
-        assert segments[0]["pass_condition"] == segment.pass_condition
+        self.api_client.check_segment_created(segment)
 
     @allure.title("Test delete segment")
     @pytest.mark.API
     def test_delete_segment(self):
         segment_id = self.api_client.create_segment().id
         self.api_client.delete_segment(segment_id)
-        assert int(segment_id) not in [segment["id"] for segment in self.api_client.get_all_segments()]
+        assert self.api_client.check_segment_deleted(segment_id)
 
     @allure.title("Test create campaign")
     @pytest.mark.API
     def test_create_campaign(self, create_new_campaign):
         campaign = create_new_campaign
-        all_campaigns = self.api_client.gel_all_campaigns()
-        assert campaign.id in [item["id"] for item in all_campaigns]
-        assert campaign.name in [item["name"] for item in all_campaigns]
+        assert self.api_client.check_camping_created(campaign)

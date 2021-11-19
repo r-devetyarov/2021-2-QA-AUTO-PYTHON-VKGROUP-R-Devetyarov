@@ -10,6 +10,7 @@ import faker
 import requests
 from PIL import Image
 
+from constants import Constants
 from constants_web import ConstantsWeb
 
 fake = faker.Faker()
@@ -119,8 +120,8 @@ class ApiBase:
         data = {
             "email": self.user,
             "password": self.password,
-            "continue": "https://target.my.com/auth/mycom?state=target_login%3D1%26ignore_opener%3D1#email",
-            "failure": "https://account.my.com/login/",
+            "continue": f"{Constants.URL_TEST}{ConstantsWeb.ROOT_PATH}",
+            "failure": f"{ConstantsWeb.FAILURE_URL}",
         }
         res = self.session.post(
             "https://auth-ac.my.com/auth?lang=en&nosavelogin=0",
@@ -170,6 +171,17 @@ class ApiBase:
         )
         return namedtuple("SEGMENT", ["id", "pass_condition", "name"])(response["id"], pass_condition,
                                                                        segment_name)
+
+    def check_segment_created(self, segment) -> bool:
+        all_segments = self.get_all_segments()
+        segments = [
+            item for item in all_segments if segment.id == item["id"]
+        ]
+        return len(segments) > 0 and segments[0]["name"] == segment.name \
+               and segments[0]["pass_condition"] == segment.pass_condition
+
+    def check_segment_deleted(self, segment_id) -> bool:
+        return int(segment_id) not in [segment["id"] for segment in self.get_all_segments()]
 
     @allure.step("API: delete segment with id {segment_id}")
     def delete_segment(self, segment_id: str) -> None:
@@ -277,6 +289,11 @@ class ApiBase:
             raise ResponseErrorException(f"key: id not in response: {response.json()}")
         else:
             return namedtuple("CAMPAIGN", ["id", "name"])(response["id"], payload["name"])
+
+    def check_camping_created(self, campaign) -> bool:
+        all_campaigns = self.gel_all_campaigns()
+        return campaign.id in [item["id"] for item in all_campaigns] \
+               and campaign.name in [item["name"] for item in all_campaigns]
 
     def delete_campaign(self, campaign_id: int) -> None:
         payload = [{"id": campaign_id, "status": "deleted"}]
