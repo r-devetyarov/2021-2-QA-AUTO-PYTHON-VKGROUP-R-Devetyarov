@@ -4,3 +4,4 @@ selenium==4.0.0a5
 allure-pytest==2.8.32
 allure-python-commons==2.8.32
 webdriver-manager==3.3.0
+SQLAlchemy==1.4.13
