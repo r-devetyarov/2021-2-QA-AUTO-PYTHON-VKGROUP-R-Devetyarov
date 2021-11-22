@@ -57,4 +57,4 @@ class MysqlORMClient:
         table = model(**kwargs)
         self.session.add(table)
         self.session.commit()
-        return table.all()
+        return table
