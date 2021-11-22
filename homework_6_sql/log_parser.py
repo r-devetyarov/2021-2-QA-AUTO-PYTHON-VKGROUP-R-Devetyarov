@@ -21,7 +21,7 @@ def log_parser(
         path: Path,
         bad_request_count_top: int = 5,
         server_error_count_top: int = 5
-) -> Dict[str, Union]:
+):
     params = Params(path=path,
                     bad_request_max_size=bad_request_count_top,
                     top_users_server_error=server_error_count_top)
@@ -47,7 +47,7 @@ def log_parser(
                 bad_requests.append(
                     dict(request_ip=nginx_log.ip, rs_status_code=nginx_log.status_code,
                          request_size=nginx_log.request_count,
-                         requst_url=nginx_log.url))
+                         request_url=nginx_log.url))
 
             if nginx_log.status_code in SERVER_ERROR_RC:
                 server_error.append(nginx_log.ip)
