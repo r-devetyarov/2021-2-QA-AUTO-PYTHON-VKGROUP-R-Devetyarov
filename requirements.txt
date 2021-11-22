@@ -5,3 +5,4 @@ allure-pytest==2.8.32
 allure-python-commons==2.8.32
 webdriver-manager==3.3.0
 SQLAlchemy==1.4.13
+PyMySQL==1.0.2
