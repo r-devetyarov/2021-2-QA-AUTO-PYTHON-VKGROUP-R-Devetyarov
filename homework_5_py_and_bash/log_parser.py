@@ -5,7 +5,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import NamedTuple, Dict, List
 
-METHODS = ("GET", "POST", "PUT", "DELETE", "PATH", "CONNECT", "OPTIONS", "TRACE", "HEAD")
 BAD_REQUEST_RC = tuple(i for i in range(400, 500))
 SERVER_ERROR_RC = tuple(i for i in range(500, 600))
 
@@ -41,7 +40,7 @@ def log_parser():
     if not Path(params.path).exists():
         raise PathDoesNotExist(f'{params.path} doens\'t exists')
 
-    method_count = {"methods_count": {f"count_{key.lower()}": 0 for key in METHODS}}
+    method_count = {"methods_count": {}}
     url_list = []
     bad_requests = []
     server_error = []
@@ -52,6 +51,8 @@ def log_parser():
             nginx_log = nginx_line_parser(line)
 
             line_count += 1
+            if f"count_{nginx_log.method.lower()}" not in method_count["methods_count"]:
+                method_count["methods_count"][f"count_{nginx_log.method.lower()}"] = 0
             method_count["methods_count"][f"count_{nginx_log.method.lower()}"] += 1
             url_list.append(nginx_log.url)
 
@@ -106,9 +107,9 @@ def nginx_line_parser(line_nginx_log: str) -> NginxParams:
     ip = split_line[0]
     url = split_line[6].replace('"', '')
     method = split_line[5].replace('"', '')
-    if method not in METHODS:
-        # для случая когда метод запроса записан слитно (1 такой случай)
-        method = [met for met in METHODS if met in method[-10:]][0]
+    # if method not in METHODS:
+    #     # для случая когда метод запроса записан слитно (1 такой случай)
+    #     method = [met for met in METHODS if met in method[-10:]][0]
     status_code = int(split_line[8])
     if split_line[9] == "-":
         request_count = 0
