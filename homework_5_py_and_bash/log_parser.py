@@ -107,9 +107,6 @@ def nginx_line_parser(line_nginx_log: str) -> NginxParams:
     ip = split_line[0]
     url = split_line[6].replace('"', '')
     method = split_line[5].replace('"', '')
-    # if method not in METHODS:
-    #     # для случая когда метод запроса записан слитно (1 такой случай)
-    #     method = [met for met in METHODS if met in method[-10:]][0]
     status_code = int(split_line[8])
     if split_line[9] == "-":
         request_count = 0
