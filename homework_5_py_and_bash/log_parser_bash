@@ -12,6 +12,9 @@ RESULTS="results_$(date +%s).txt"
 LINE_COUNTS=$(cat $PATH_TO_LOG | wc -l)
 echo "line counts \n$LINE_COUNTS" >>$RESULTS
 
+METHODS_COUNTS=$(cat $PATH_TO_LOG | awk '{print $6}' | tr -d '"' | sort | uniq -c)
+echo "methods counts \n$METHODS_COUNTS" >>$RESULTS
+
 MOST_COMMON_URL=$(cut -d ' ' -f7 $PATH_TO_LOG | sort | uniq -c | sort -nr | head -n1)
 echo "most common url\n$MOST_COMMON_URL" >>$RESULTS
 
