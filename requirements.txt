@@ -6,3 +6,4 @@ allure-python-commons==2.8.32
 webdriver-manager==3.3.0
 Faker==9.8.0
 pillow
+Flask==2.0.0
