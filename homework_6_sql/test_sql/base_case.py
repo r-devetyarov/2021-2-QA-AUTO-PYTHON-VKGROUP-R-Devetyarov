@@ -24,8 +24,4 @@ class MysqlBase:
     def all_query(self, model: Callable):
         self.mysql.session.commit()
         all_records = self.mysql.session.query(model).all()
-        print(all_records)
         return all_records
-
-
-

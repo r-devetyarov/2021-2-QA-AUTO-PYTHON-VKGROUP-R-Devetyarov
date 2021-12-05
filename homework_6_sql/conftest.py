@@ -8,6 +8,10 @@ from log_parser import log_parser
 from mysql_orm.mysql_client import MysqlORMClient
 
 
+def pytest_addoption(parser):
+    parser.addoption('--path-to-log', default=constants_for_tests.ConstantsForTests.DEFAULT_PATH_TO_ACCESS_LOG.value)
+
+
 def pytest_configure(config):
     mysql_orm_client = MysqlORMClient(
         user=db_constants.DbProperty.DB_USER_ROOT.value,
@@ -34,8 +38,8 @@ def mysql_orm_client(request) -> MysqlORMClient:
 
 
 @pytest.fixture(scope='session')
-def log_parser_result() -> Dict:
-    return log_parser(path=Path(constants_for_tests.ConstantsForTests.PATH_TO_ACCESS_LOG.value))
+def log_parser_result(request) -> Dict:
+    return log_parser(path=Path(request.config.getoption("--path-to-log")))
 
 
 def _is_worker(config) -> bool:

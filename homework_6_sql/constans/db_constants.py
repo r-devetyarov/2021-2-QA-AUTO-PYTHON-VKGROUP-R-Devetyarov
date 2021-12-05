@@ -10,7 +10,7 @@ class TablesName(str, enum.Enum):
 
 
 class DbProperty(enum.Enum):
-    DB_NAME = 'TEST_PYTHON'
+    DB_NAME = 'TEST_SQL'
     DB_HOST = '127.0.0.1'
     DB_PORT = 3306
     DB_USER_ROOT = 'root'
