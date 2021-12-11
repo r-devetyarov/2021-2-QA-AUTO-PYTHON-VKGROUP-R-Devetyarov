@@ -2,11 +2,12 @@ import allure
 
 from clients.ui_client import UiClient
 from ui_pages.locators.locators import RegistrationPageLocators
-from utils import utils
+from utils.builder import Builder
 
 
 class RegisterPage(UiClient):
     locators = RegistrationPageLocators()
+    builder = Builder()
 
     @allure.step("Input username {username}")
     def input_username(self, username: str):
@@ -45,18 +46,21 @@ class RegisterPage(UiClient):
             self,
             username=None,
             email=None,
-            password="123456",
-            confirm_password="123456",
+            password=None,
+            confirm_password=None,
             accept_button: bool = True
     ) -> tuple:
-        if username is None:
-            username = utils.random_string()
-        if username is None:
-            email = self.faker.ascii_email()
-        self.input_username(username)
-        self.input_email(email)
-        self.input_password(password)
-        self.confirm_password(confirm_password)
+        builder_user = self.builder.user_data(
+            username=username,
+            email=email,
+            password=password,
+            confirm_password=confirm_password
+        )
+
+        self.input_username(builder_user.username)
+        self.input_email(builder_user.email)
+        self.input_password(builder_user.password)
+        self.confirm_password(builder_user.confirm_password)
 
         if accept_button:
             self.click_accept_button()

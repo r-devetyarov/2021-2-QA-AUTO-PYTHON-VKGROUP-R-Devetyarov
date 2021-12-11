@@ -1,11 +1,12 @@
 import enum
-import time
 from typing import Callable
 
+import faker
 import sqlalchemy
 from sqlalchemy import inspect
 from sqlalchemy.orm import sessionmaker
 
+import utils.utils
 from constants.app_constants import TablesName, DbProperty, DefaultUser
 from db_models.models import Base, TestUsers
 
@@ -23,6 +24,7 @@ class MysqlORMClient:
         self.engine = None
         self.connection = None
         self.session = None
+        self.faker = faker.Faker()
 
     def connect(self, db_created=True):
         db = self.db_name if db_created else ''
@@ -56,7 +58,7 @@ class MysqlORMClient:
             model=TestUsers,
             username=DefaultUser.USERNAME,
             password=DefaultUser.PASSWORD,
-            email=DefaultUser.PASSWORD,
+            email=DefaultUser.EMAIL,
             access=1,
             active=1
         )
@@ -72,7 +74,15 @@ class MysqlORMClient:
         all_records = self.session.query(TestUsers).all()
         return all_records
 
-    def check_user_in_db(self, username: str, password=None, email=None, access=None):
+    def check_user_in_db(
+            self,
+            username: str,
+            password=None,
+            email=None,
+            access=None,
+            active=None,
+            start_active_time=None
+    ):
         self.session.commit()
         all_users: TestUsers = self.session.query(TestUsers).filter_by(username=username).all()
         print(all_users)
@@ -90,5 +100,28 @@ class MysqlORMClient:
         if access:
             check_access = email == all_users[0].access
             res.append(check_access)
+        if active:
+            check_active = active == all_users[0].active
+            res.append(check_active)
+        if start_active_time:
+            check_start_active_time = start_active_time == str(all_users[0].start_active_time)
+            res.append(check_start_active_time)
 
         return res
+
+    def add_user(
+            self,
+            username: str = None,
+            password: str = None,
+            email: str = None,
+            access: int = 1
+    ):
+        if not username:
+            username = self.faker.user_name()
+        if not password:
+            password = utils.utils.random_string()
+        if not email:
+            email = self.faker.ascii_email()
+        print(username, password, email)
+        self.insert_data(TestUsers, username=username, password=password, email=email, access=access)
+        return username, password, email, access

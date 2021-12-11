@@ -2,6 +2,8 @@ import random
 import string
 import time
 
+from datetime import datetime
+
 
 class TimeoutException(Exception):
     pass
@@ -34,8 +36,17 @@ def random_string(
     return "".join(random.choice(chars) for _ in range(size))
 
 
+def random_email(size: int = 10):
+    str_size = size - 4
+    return f"{random_string(size=str_size)}@a.a"
+
+
 def check_contain_in_list(pattern: str, array: list) -> bool:
     for elem in array:
         if pattern in elem:
             return True
     return False
+
+
+def get_current_date():
+    return datetime.today().strftime('%Y-%m-%d')

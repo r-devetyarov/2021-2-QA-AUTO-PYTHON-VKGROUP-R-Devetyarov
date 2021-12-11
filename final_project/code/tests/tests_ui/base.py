@@ -37,10 +37,15 @@ class BaseCase:
             for cookie in cookies:
                 self.driver.add_cookie(cookie)
             self.driver.refresh()
-            self.main_page = MainPage(self.driver)
+        self.main_page = MainPage(self.driver)
 
-        else:
-            self.login_page: LoginPage = LoginPage(self.driver)
-            self.register_page: RegisterPage = RegisterPage(self.driver)
+        self.login_page: LoginPage = LoginPage(self.driver)
+        self.register_page: RegisterPage = RegisterPage(self.driver)
 
         self.prepare()
+
+    @pytest.fixture
+    def create_user_and_login(self) -> tuple:
+        user = self.mysql.add_user()
+        self.login_page.login(login=user[0], password=user[1])
+        return user

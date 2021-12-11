@@ -17,12 +17,12 @@ class RegistrationPageLocators:
     FIELD_CONFIRM_PASSWORD = (By.ID, "confirm")
     CHECKBOX_ACCEPT = (By.ID, "term")
     REGISTER_BUTTON = (By.ID, "submit")
-    INCORRECT_USERNAME_ALERT = (By.ID, "flash")
+    INCORRECT_ALERT = (By.ID, "flash")
 
 
 class MainPageLocators:
     LOGOUT_BUTTON = (By.ID, "logout")
-    CURRENT_USER_TEXT = (By.ID, "login-name")
+    CURRENT_USER_TEXT = (By.XPATH, '//*[@id="login-name"]')
     WHAT_IS_API_BTN = (By.XPATH, '//a[@href="https://en.wikipedia.org/wiki/Application_programming_interface"]')
     FUTURE_OF_INTERNET_BTN = (
         By.XPATH,
