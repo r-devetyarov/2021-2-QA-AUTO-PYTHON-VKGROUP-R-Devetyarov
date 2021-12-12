@@ -9,7 +9,7 @@ class AppConstants:
 
 class DefaultUser:
     USERNAME = "administrator"
-    PASSWORD = "administrator"
+    PASSWORD = "admin123"
     EMAIL = "admin_email@email.com"
 
 

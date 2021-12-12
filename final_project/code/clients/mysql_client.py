@@ -9,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 import utils.utils
 from constants.app_constants import TablesName, DbProperty, DefaultUser
 from db_models.models import Base, TestUsers
+from utils.builder import Builder
 
 
 class MysqlORMClient:
@@ -41,6 +42,8 @@ class MysqlORMClient:
             self.connect(db_created=False)
             self.execute_query(f'DROP database if exists {self.db_name}', fetch=False)
             self.execute_query(f'CREATE database {self.db_name}', fetch=False)
+            # self.execute_query(f"CREATE USER 'test_qa' IDENTIFIED BY 'qa_test'", fetch=False)
+            # self.execute_query(f"GRANT ALL PRIVILEGES ON *.* TO 'test_qa'", fetch=False)
         finally:
             self.connection.close()
 
@@ -77,6 +80,7 @@ class MysqlORMClient:
     def check_user_in_db(
             self,
             username: str,
+            user_is_created: bool = True,
             password=None,
             email=None,
             access=None,
@@ -85,10 +89,15 @@ class MysqlORMClient:
     ):
         self.session.commit()
         all_users: TestUsers = self.session.query(TestUsers).filter_by(username=username).all()
-        print(all_users)
-
+        # TODO разбить метод на 2, один проверят что есть в базке, другой что нет
         res = []
         check_username = len(all_users) == 1
+
+        if not check_username and user_is_created:
+            raise AssertionError("User not created")
+        if not user_is_created and check_username:
+            raise AssertionError("User has bin created")
+
         res.append(check_username)
 
         if password:
@@ -98,7 +107,7 @@ class MysqlORMClient:
             check_email = email == all_users[0].email
             res.append(check_email)
         if access:
-            check_access = email == all_users[0].access
+            check_access = access == all_users[0].access
             res.append(check_access)
         if active:
             check_active = active == all_users[0].active
@@ -116,12 +125,19 @@ class MysqlORMClient:
             email: str = None,
             access: int = 1
     ):
-        if not username:
-            username = self.faker.user_name()
-        if not password:
-            password = utils.utils.random_string()
-        if not email:
-            email = self.faker.ascii_email()
-        print(username, password, email)
-        self.insert_data(TestUsers, username=username, password=password, email=email, access=access)
-        return username, password, email, access
+        user_data = Builder().user_data(username=username, email=email, password=password, access=access)
+        # if not username:
+        #     username = self.faker.user_name()
+        # if not password:
+        #     password = utils.utils.random_string()
+        # if not email:
+        #     email = self.faker.ascii_email()
+        # print(username, password, email)
+        self.insert_data(
+            TestUsers,
+            username=user_data.username,
+            password=user_data.password,
+            email=user_data.email,
+            access=user_data.access
+        )
+        return user_data

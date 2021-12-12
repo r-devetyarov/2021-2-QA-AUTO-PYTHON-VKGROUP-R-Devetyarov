@@ -47,5 +47,5 @@ class BaseCase:
     @pytest.fixture
     def create_user_and_login(self) -> tuple:
         user = self.mysql.add_user()
-        self.login_page.login(login=user[0], password=user[1])
+        self.login_page.login(login=user.username, password=user.password)
         return user

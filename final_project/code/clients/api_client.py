@@ -8,6 +8,7 @@ import requests
 
 from constants.app_constants import AppConstants, DefaultUser
 from constants.constants_web import ConstantsWeb
+from utils.builder import Builder
 
 logger = logging.getLogger("test")
 MAX_RESPONSE_LENGTH = 300
@@ -31,6 +32,7 @@ class ApiBase:
         self.session = requests.Session()
         self.path = ConstantsWeb
         self.faker = faker.Faker()
+        self.builder = Builder()
 
     @staticmethod
     def log_pre(url, headers, data, expected_status):
@@ -143,11 +145,22 @@ class ApiClient(ApiBase):
         )
 
     @allure.step("API: add user with creds:\n username: {username}, password: {password}, email: {email}")
-    def add_user(self, username: str, password: str, email: str, expected_rc=None):
+    def add_user(
+            self,
+            username: str = None,
+            password: str = None,
+            email: str = None,
+            expected_rc=None,
+            request_data=None
+    ):
+        data_user = self.builder.user_data(username=username, password=password, email=email)
+        payload = {"username": data_user.username, "password": data_user.password, "email": data_user.email}
+        if request_data is not None:
+            payload = request_data
         return self._request(
             method='POST',
             path=ConstantsWeb.ADD_USER_POST,
-            json={"username": username, "password": password, "email": email},
+            json=payload,
             check_status_code=expected_rc,
             jsonify=False
         )
@@ -177,4 +190,13 @@ class ApiClient(ApiBase):
             path=f'{ConstantsWeb.ACCEPT_USER_GET}/{username}',
             jsonify=jsonify,
             check_status_code=expected_rc
+        )
+
+    @allure.step("API get application status")
+    def get_status_app(self):
+        return self._request(
+            method="GET",
+            path=ConstantsWeb.APP_STATUS_GET,
+            jsonify=False,
+            check_status_code=None
         )

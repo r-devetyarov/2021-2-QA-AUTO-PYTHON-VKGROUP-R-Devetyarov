@@ -17,5 +17,14 @@ class BaseCase:
         self.mysql: MysqlORMClient = mysql_orm_client
         self.logger = logger
         if self.authorized:
-            res = api_client.login(username=DefaultUser.USERNAME, password=DefaultUser.PASSWORD)
-            print(res.status_code)
+            api_client.login(username=DefaultUser.USERNAME, password=DefaultUser.PASSWORD)
+
+    @pytest.fixture
+    def create_user(self):
+        user_data = self.api_client.builder.user_data()
+        self.api_client.add_user(
+            username=user_data.username,
+            password=user_data.password,
+            email=user_data.email
+        )
+        return user_data

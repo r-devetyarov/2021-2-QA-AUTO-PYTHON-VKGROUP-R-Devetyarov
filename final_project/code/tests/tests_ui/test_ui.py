@@ -10,6 +10,15 @@ from utils import utils
 @pytest.mark.UI
 @allure.feature("UI tests")
 class TestUi(BaseCase):
+    ''''
+    ДОБАВИТЬ:
+    повторное создание юзера с существующим юзернейм
+    повторное создание юзера с существющим емаил
+    при переходе на страницу велком проверку лога браузера - если получится
+    логин с пустыми полями
+    регистрация с пустыми полями
+    регистрация с невалидной длиной пароля
+    '''
 
     @pytest.mark.parametrize(
         "page_locator, expected_url_path",
@@ -23,7 +32,6 @@ class TestUi(BaseCase):
     )
     @allure.title("Test open page {page_locator[1]}")
     def test_open_pages(self, page_locator, expected_url_path):
-        # добавить проверку консоль лога браузера
         self.main_page.click_by(page_locator)
         urls = self.main_page.get_list_current_urls()
         assert utils.check_contain_in_list(expected_url_path, urls)
@@ -83,8 +91,6 @@ class TestUi(BaseCase):
 @pytest.mark.UI
 @allure.feature("UI tests")
 class TestUiRegistration(BaseCase):
-    # TODO добавить проверки с пустыми полями
-    # TODO добавить тест с уже существующими уникальными полями
     authorized = False
 
     def prepare(self):
@@ -108,7 +114,7 @@ class TestUiRegistration(BaseCase):
 
     @allure.title("Test registration invalid username len")
     @pytest.mark.parametrize("username_len", [1, 5, 17, 445])
-    def test_invalid_username(self, username_len):
+    def test_invalid_username_len(self, username_len):
         username = utils.random_string(size=username_len)
         self.register_page.register_user(username=username)
         assert self.register_page.element_is_presence(
@@ -204,6 +210,6 @@ class TestUiLogin(BaseCase):
     def test_login_without_access(self):
         user = self.mysql.add_user(access=0)
         self.login_page.login(
-            login=user[0], password=user[1]
+            login=user.username, password=user.password
         )
         assert self.login_page.element_is_presence(self.login_page.locators.FAIL_LOGIN)
