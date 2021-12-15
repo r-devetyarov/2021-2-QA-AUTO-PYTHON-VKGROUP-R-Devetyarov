@@ -80,7 +80,7 @@ class MysqlORMClient:
     def check_user_in_db(
             self,
             username: str,
-            user_is_created: bool = True,
+            # user_is_created: bool = True,
             password=None,
             email=None,
             access=None,
@@ -93,10 +93,10 @@ class MysqlORMClient:
         res = []
         check_username = len(all_users) == 1
 
-        if not check_username and user_is_created:
-            raise AssertionError("User not created")
-        if not user_is_created and check_username:
-            raise AssertionError("User has bin created")
+        # if not check_username and user_is_created:
+        #     raise AssertionError("User not created")
+        # if not user_is_created and check_username:
+        #     raise AssertionError("User has bin created")
 
         res.append(check_username)
 

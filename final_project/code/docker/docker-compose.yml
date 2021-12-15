@@ -1,0 +1,31 @@
+version: "2.1"
+# написать докерфайл и добавить сервис для мока
+services:
+  percona:
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    image: "percona:5.7"
+    container_name: "mysql"
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "-uroot", "-ppass", "ping", "-h", "percona"]
+      timeout: 1s
+      retries: 30
+
+  application:
+    image: "myapp:latest"
+    container_name: "myapp"
+    tty: true
+    links:
+      - percona
+    volumes:
+      - ./myapp_conf:/tmp/myappconf
+    ports:
+     - "8079:8079"
+    depends_on:
+      percona:
+        condition: service_healthy
+    command: /app/myapp --config=/tmp/myappconf

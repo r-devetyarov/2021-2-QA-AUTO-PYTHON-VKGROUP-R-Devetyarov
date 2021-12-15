@@ -46,7 +46,6 @@ class TestApiRegister(BaseCase):
             username=user_data.username,
             email=user_data.email,
             password=user_data.password,
-            user_is_created=False
         ))
 
     @allure.title("Registry user with duplicate username")
@@ -69,7 +68,6 @@ class TestApiRegister(BaseCase):
             username=user_data.username,
             email=user_data.email,
             password=user_data.password,
-            user_is_created=False
         ))
 
     @allure.title("Registry user without obligatory field")
@@ -112,13 +110,12 @@ class TestApiRegister(BaseCase):
             field: value
         }
         resp = self.api_client.add_user(request_data=payload)
-        # assert resp.status_code == 201
         assert all(self.mysql.check_user_in_db(
             username=user_data.username,
             email=user_data.email,
             password=user_data.password,
-            user_is_created=False
         ))
+        # assert resp.status_code == 201
 
     @allure.title("Registry user with invalid username length")
     @pytest.mark.parametrize("username_len", [0, 1, 5, 17, 445])
@@ -126,8 +123,8 @@ class TestApiRegister(BaseCase):
         username = utils.random_string(size=username_len)
         resp = self.api_client.add_user(username=username)
 
+        assert not all(self.mysql.check_user_in_db(username=username))
         assert resp.status_code == 400
-        assert not all(self.mysql.check_user_in_db(username=username, user_is_created=False))
 
     @allure.title("Registry user with invalid email length")
     @pytest.mark.parametrize("email_len", [0, 65, 321])
@@ -136,8 +133,8 @@ class TestApiRegister(BaseCase):
         user_data = self.api_client.builder.user_data()
         resp = self.api_client.add_user(email=email, username=user_data.username)
 
+        assert not all(self.mysql.check_user_in_db(username=user_data.username))
         assert resp.status_code == 400
-        assert not all(self.mysql.check_user_in_db(username=user_data.username, email=email, user_is_created=False))
 
     @allure.title("Registry user with invalid password length")
     @pytest.mark.parametrize("password_len", [0, 256, 999])
@@ -146,12 +143,10 @@ class TestApiRegister(BaseCase):
         user_data = self.api_client.builder.user_data()
         resp = self.api_client.add_user(password=password, username=user_data.username)
 
-        assert resp.status_code == 400
         assert not all(self.mysql.check_user_in_db(
             username=user_data.username,
-            password=password,
-            user_is_created=False
         ))
+        assert resp.status_code == 400
 
     @allure.title("Test registration invalid email")
     @pytest.mark.parametrize("email_len", [0, 10])
@@ -160,8 +155,8 @@ class TestApiRegister(BaseCase):
         email = utils.random_string(size=email_len)
         resp = self.api_client.add_user(username=user_data.username, email=email)
 
+        assert not all(self.mysql.check_user_in_db(username=user_data.username))
         assert resp.status_code == 400
-        assert not all(self.mysql.check_user_in_db(username=user_data.username, user_is_created=False))
 
 
 @pytest.mark.API
@@ -173,7 +168,7 @@ class TestApiDeleteUser(BaseCase):
     def test_delete_created_user(self, create_user):
         resp = self.api_client.delete_user(username=create_user.username)
         assert resp.status_code == 204
-        assert not all(self.mysql.check_user_in_db(username=create_user.username, user_is_created=False))
+        assert not all(self.mysql.check_user_in_db(username=create_user.username))
 
     @allure.title("Test delete not created user")
     def test_delete_created_not_crated_user(self):

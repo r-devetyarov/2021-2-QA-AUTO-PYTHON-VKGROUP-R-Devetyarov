@@ -13,11 +13,12 @@ class TestUi(BaseCase):
     ''''
     ДОБАВИТЬ:
     повторное создание юзера с существующим юзернейм
-    повторное создание юзера с существющим емаил
+    повторное создание юзера с существующим емаил
     при переходе на страницу велком проверку лога браузера - если получится
     логин с пустыми полями
     регистрация с пустыми полями
     регистрация с невалидной длиной пароля
+    логин юзером потом меняем access переход куда-нибудь
     '''
 
     @pytest.mark.parametrize(
@@ -164,9 +165,10 @@ class TestUiLogout(BaseCase):
         user = create_user_and_login
         self.main_page.logout()
         assert not self.main_page.element_is_presence(
-            self.main_page.locators.LOGOUT_BUTTON
+            self.main_page.locators.LOGOUT_BUTTON,
+            timeout=10
         )
-        assert all(self.mysql.check_user_in_db(username=user[0], active=0))
+        assert all(self.mysql.check_user_in_db(username=user.username, active=0))
 
 
 @pytest.mark.UI
@@ -186,7 +188,7 @@ class TestUiLogin(BaseCase):
         ).text
         assert all(
             self.mysql.check_user_in_db(
-                username=user[0], active=1, start_active_time=utils.get_current_date()
+                username=user.username, active=1, start_active_time=utils.get_current_date()
             )
         )
 
