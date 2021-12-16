@@ -35,7 +35,6 @@ def get_user_surname(name):
 def delete_user(user_id):
     user_id = str(user_id)
     if user_id in USER_DATA:
-        print("DELETED")
         USER_DATA.pop(user_id)
         return jsonify(f"Successfully deleted user with id {user_id}"), 200
     else:
