@@ -5,8 +5,8 @@ import sys
 
 import allure
 import pytest
-import utils.utils
 
+import utils.utils
 from clients.api_client import ApiClient, wait_ready_app
 from clients.mysql_client import MysqlORMClient
 from constants.app_constants import DbProperty
@@ -47,7 +47,8 @@ def pytest_configure(config):
 
 
 def pytest_unconfigure(config):
-    utils.utils.run_command("chmod -R 777 /tmp/allure")
+    if not _is_worker(config):
+        utils.utils.run_command("chmod -R 777 /tmp/allure")
 
 
 @pytest.fixture(scope='session')
