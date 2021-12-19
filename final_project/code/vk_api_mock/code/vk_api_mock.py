@@ -1,9 +1,10 @@
 #!/usr/bin/env python3.8
-import logging.handlers
 import os
+import random
+import signal
 
 from flask import Flask, jsonify
-import random
+
 app = Flask(__name__)
 
 os.environ['WERKZEUG_RUN_MAIN'] = 'true'
@@ -16,6 +17,20 @@ os.environ['WERKZEUG_RUN_MAIN'] = 'true'
 # app.logger.addHandler(handler)
 
 USERS = {}
+
+
+class ServerTerminationError(Exception):
+    pass
+
+
+def exit_gracefully(signum, frame):
+    raise ServerTerminationError()
+
+
+# gracefully exit on -2
+signal.signal(signal.SIGINT, exit_gracefully)
+# gracefully exit on -15
+signal.signal(signal.SIGTERM, exit_gracefully)
 
 
 @app.route('/vk_id/<username>', methods=['GET'])
@@ -33,4 +48,7 @@ def add_user(username):
 
 
 if __name__ == "__main__":
-    app.run()
+    try:
+        app.run(host='0.0.0.0', port=5000)
+    except ServerTerminationError:
+        pass

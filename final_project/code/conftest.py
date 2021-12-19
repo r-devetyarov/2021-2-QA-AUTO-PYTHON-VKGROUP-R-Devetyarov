@@ -6,7 +6,7 @@ import sys
 import allure
 import pytest
 
-from clients.api_client import ApiClient
+from clients.api_client import ApiClient, wait_ready_app
 from clients.mysql_client import MysqlORMClient
 from constants.app_constants import DbProperty
 
@@ -26,12 +26,12 @@ def pytest_configure(config):
         db_name=DbProperty.DB_NAME
     )
 
+    base_dir = log_base_dir()
     if not _is_worker(config):
+        wait_ready_app()
         mysql_orm_client.recreate_db()
 
     mysql_orm_client.connect(db_created=True)
-
-    base_dir = log_base_dir()
 
     if not _is_worker(config):
         mysql_orm_client.prepare_create_tables()

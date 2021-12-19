@@ -6,6 +6,7 @@ from utils import utils
 
 
 @pytest.mark.API
+@pytest.mark.ALL
 @allure.feature("API tests")
 @allure.story("Tests register user")
 class TestApiRegister(BaseCase):
@@ -160,6 +161,7 @@ class TestApiRegister(BaseCase):
 
 
 @pytest.mark.API
+@pytest.mark.ALL
 @allure.feature("API tests")
 @allure.story("Tests delete user")
 class TestApiDeleteUser(BaseCase):
@@ -178,6 +180,7 @@ class TestApiDeleteUser(BaseCase):
 
 
 @pytest.mark.API
+@pytest.mark.ALL
 @allure.feature("API tests")
 @allure.story("Tests block user")
 class TestApiBlockUser(BaseCase):
@@ -209,6 +212,7 @@ class TestApiBlockUser(BaseCase):
 
 
 @pytest.mark.API
+@pytest.mark.ALL
 @allure.feature("API tests")
 @allure.story("Tests accept user")
 class TestApiAcceptUser(BaseCase):
@@ -240,6 +244,7 @@ class TestApiAcceptUser(BaseCase):
 
 
 @pytest.mark.API
+@pytest.mark.ALL
 @allure.feature("API tests")
 @allure.story("Tests get status app")
 class TestApiGetStatusApp(BaseCase):
@@ -252,6 +257,7 @@ class TestApiGetStatusApp(BaseCase):
 
 
 @pytest.mark.API
+@pytest.mark.ALL
 @allure.feature("API tests")
 @allure.story("Tests without authorized")
 class TestApiWithoutAuth:

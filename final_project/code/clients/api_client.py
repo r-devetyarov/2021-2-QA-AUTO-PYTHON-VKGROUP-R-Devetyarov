@@ -6,9 +6,10 @@ import allure
 import faker
 import requests
 
-from constants.app_constants import AppConstants, DefaultUser
+from constants.app_constants import DefaultUser, ProxyAppConstants
 from constants.constants_web import ConstantsWeb
 from utils.builder import Builder
+from utils.utils import wait
 
 logger = logging.getLogger("test")
 MAX_RESPONSE_LENGTH = 300
@@ -22,12 +23,20 @@ class ResponseStatusCodeException(Exception):
     pass
 
 
-def get_status_app():
-    return requests.get(url=f"{AppConstants.BASE_URL}/{ConstantsWeb.APP_STATUS_GET}")
+def get_status_app() -> requests.Response:
+    return requests.get(url=f"{ProxyAppConstants.BASE_URL}{ConstantsWeb.APP_STATUS_GET}")
+
+
+def wait_ready_app():
+    def check():
+        res = get_status_app().json()
+        assert res == {"status": "ok"}
+        return res
+    wait(method=check, timeout=20, interval=2, check=True)
 
 
 class ApiBase:
-    def __init__(self, base_url=f"{AppConstants.BASE_URL}"):
+    def __init__(self, base_url=f"{ProxyAppConstants.BASE_URL}"):
         self.base_url = base_url
         self.session = requests.Session()
         self.path = ConstantsWeb
@@ -169,7 +178,7 @@ class ApiClient(ApiBase):
     def delete_user(self, username: str, jsonify=False, expected_rc=None):
         return self._request(
             method='GET',
-            path=f'{ConstantsWeb.DELETE_USER_GET}/{username}',
+            path=f'{ConstantsWeb.DELETE_USER_GET}{username}',
             jsonify=jsonify,
             check_status_code=expected_rc
         )
@@ -178,7 +187,7 @@ class ApiClient(ApiBase):
     def block_user(self, username: str, jsonify=False, expected_rc=None):
         return self._request(
             method='GET',
-            path=f'{ConstantsWeb.BLOCK_USER_GET}/{username}',
+            path=f'{ConstantsWeb.BLOCK_USER_GET}{username}',
             jsonify=jsonify,
             check_status_code=expected_rc
         )
@@ -187,7 +196,7 @@ class ApiClient(ApiBase):
     def access_user(self, username: str, jsonify=False, expected_rc=None):
         return self._request(
             method='GET',
-            path=f'{ConstantsWeb.ACCEPT_USER_GET}/{username}',
+            path=f'{ConstantsWeb.ACCEPT_USER_GET}{username}',
             jsonify=jsonify,
             check_status_code=expected_rc
         )

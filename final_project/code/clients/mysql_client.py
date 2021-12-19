@@ -32,6 +32,7 @@ class MysqlORMClient:
         url = f'mysql+pymysql://{self.user}:{self.password}@{self.host}:{self.port}/{db}'
 
         self.engine = sqlalchemy.create_engine(url, encoding='utf8')
+        print("TRY TO CONNECT DB")
         self.connection = self.engine.connect()
 
         sm = sessionmaker(bind=self.connection.engine)  # session creation wrapper
@@ -39,12 +40,16 @@ class MysqlORMClient:
 
     def recreate_db(self):
         try:
+            print("TRY RECREATE DB")
             self.connect(db_created=False)
             self.execute_query(f'DROP database if exists {self.db_name}', fetch=False)
             self.execute_query(f'CREATE database {self.db_name}', fetch=False)
+            print("DB RECREATED")
             # self.execute_query(f"CREATE USER 'test_qa' IDENTIFIED BY 'qa_test'", fetch=False)
             # self.execute_query(f"GRANT ALL PRIVILEGES ON *.* TO 'test_qa'", fetch=False)
+
         finally:
+            print("DB RECREATED CLOSE CONNECT")
             self.connection.close()
 
     def execute_query(self, query, fetch=True):

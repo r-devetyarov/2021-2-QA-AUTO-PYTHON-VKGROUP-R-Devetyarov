@@ -1,3 +1,5 @@
+import time
+
 import allure
 import pytest
 
@@ -8,6 +10,7 @@ from utils import utils
 
 
 @pytest.mark.UI
+@pytest.mark.ALL
 @allure.feature("UI tests")
 class TestUi(BaseCase):
     ''''
@@ -31,7 +34,7 @@ class TestUi(BaseCase):
             (MainPageLocators.LETS_ABOUT_SMTP_BTN, "wiki/SMTP"),
         ]
     )
-    @allure.title("Test open page {page_locator[1]}")
+    @allure.title("Test open page {expected_url_path}")
     def test_open_pages(self, page_locator, expected_url_path):
         self.main_page.click_by(page_locator)
         urls = self.main_page.get_list_current_urls()
@@ -83,13 +86,13 @@ class TestUi(BaseCase):
     @allure.title("Test current user")
     def test_current_user(self):
         ...
-
     @allure.title("Test current VK ID")
     def test_current_vk_id(self):
         ...
 
 
 @pytest.mark.UI
+@pytest.mark.ALL
 @allure.feature("UI tests")
 class TestUiRegistration(BaseCase):
     authorized = False
@@ -156,6 +159,7 @@ class TestUiRegistration(BaseCase):
 
 
 @pytest.mark.UI
+@pytest.mark.ALL
 @allure.feature("UI tests")
 class TestUiLogout(BaseCase):
     authorized = False
@@ -172,6 +176,7 @@ class TestUiLogout(BaseCase):
 
 
 @pytest.mark.UI
+@pytest.mark.ALL
 @allure.feature("UI tests")
 class TestUiLogin(BaseCase):
     # TODO добавить проверки с пустыми полями
@@ -183,7 +188,7 @@ class TestUiLogin(BaseCase):
         assert not self.login_page.element_is_presence(
             self.login_page.locators.FAIL_LOGIN
         )
-        assert user[0] in self.main_page.find(
+        assert user.username in self.main_page.find(
             self.main_page.locators.CURRENT_USER_TEXT
         ).text
         assert all(

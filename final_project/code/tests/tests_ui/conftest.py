@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 
 import allure
 import pytest
@@ -8,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webdriver import WebDriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-from constants.app_constants import AppConstants, DefaultUser
+from constants.app_constants import DefaultUser, ProxyAppConstants
 from ui_pages.pages.login_page import LoginPage
 
 
@@ -22,14 +23,13 @@ def get_driver(config: dict):
         options.add_experimental_option("prefs", {"download.default_directory": '/home/selenium/Downloads'})
         capabilities = {
             'browserName': 'chrome',
-            'version': '91.0'
+            'version': '91.0',
+            "enableVNC": True
         }
-        capabilities['version'] += '_vnc'
-        capabilities['enableVNC'] = True
-
+        # capabilities['version'] += '_vnc'
+        # capabilities['enableVNC'] = True
         browser = webdriver.Remote(
-            # TODO: добавить адрес селеноида из компоуса
-            command_executor='http://127.0.0.1:4444/wd/hub',
+            command_executor='http://selenoid:4444/wd/hub',
             options=options,
             desired_capabilities=capabilities
         )
@@ -48,7 +48,10 @@ def get_driver(config: dict):
 def driver(config):
     with allure.step('Init browser'):
         browser = get_driver(config)
-        browser.get(AppConstants.BASE_URL)
+        # browser.get(AppConstants.BASE_URL)
+        # browser.get("http://application:8079")
+        # browser.get(ProxyAppConstants.BASE_URL)
+        browser.get(ProxyAppConstants.BASE_URL)
 
     yield browser
     browser.quit()
@@ -76,10 +79,11 @@ def ui_report(driver, request, temp_dir):
 def get_cookies(config):
     driver: WebDriver = get_driver(config)
     try:
-        driver.get(AppConstants.BASE_URL)
+        driver.get(ProxyAppConstants.BASE_URL)
         login_page = LoginPage(driver)
         login_page.login(login=DefaultUser.USERNAME, password=DefaultUser.PASSWORD)
         cookies = driver.get_cookies()
+        # time.sleep(60)
         driver.quit()
         return cookies
     except Exception as e:
