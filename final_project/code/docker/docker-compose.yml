@@ -89,7 +89,7 @@ services:
       - my_networks
     volumes:
       - ./selenoid:/etc/selenoid
-      - /var/run/docker.sock:/var/run/docker.sock
+#      - /var/run/docker.sock:/var/run/docker.sock
       - ./selenoid/video:/opt/selenoid/video
       - ./selenoid/logs:/opt/selenoid/logs
     command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "selenoid"]
