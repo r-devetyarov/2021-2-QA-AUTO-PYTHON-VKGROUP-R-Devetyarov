@@ -5,6 +5,7 @@ import sys
 
 import allure
 import pytest
+import utils.utils
 
 from clients.api_client import ApiClient, wait_ready_app
 from clients.mysql_client import MysqlORMClient
@@ -43,6 +44,11 @@ def pytest_configure(config):
 
     config.base_temp_dir = base_dir
     config.mysql = mysql_orm_client
+
+
+def pytest_unconfigure(config):
+    utils.utils.run_command("ls -la")
+    utils.utils.run_command("chmod 777 /tmp/allure")
 
 
 @pytest.fixture(scope='session')

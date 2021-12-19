@@ -1,5 +1,6 @@
 import random
 import string
+import subprocess
 import time
 
 from datetime import datetime
@@ -50,3 +51,13 @@ def check_contain_in_list(pattern: str, array: list) -> bool:
 
 def get_current_date():
     return datetime.today().strftime('%Y-%m-%d')
+
+
+def run_command(cmd):
+    proc = subprocess.run(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True
+    )
+    print(proc.returncode, proc.stdout.decode().strip())
