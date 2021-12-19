@@ -89,11 +89,11 @@ services:
       - my_networks
     volumes:
       - ./selenoid:/selenoid
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - ./selenoid/video:/opt/selenoid/video
-#      - ./selenoid/logs:/opt/selenoid/logs
-#    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "selenoid"]
-    command: ["-container-network", "selenoid"]
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./selenoid/video:/opt/selenoid/video
+      - ./selenoid/logs:/opt/selenoid/logs
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "selenoid"]
+#    command: ["-container-network", "selenoid"]
     ports:
       - "4444:4444"
 
