@@ -36,10 +36,8 @@ class BaseCase:
             cookies = request.getfixturevalue('get_cookies')
             new_cookie = {}
             for cookie in cookies:
-                print(f"COOKIE: {cookie}")
                 new_cookie["name"] = cookie["name"]
                 new_cookie["value"] = cookie["value"]
-            print(f"NEW COOKIE {new_cookie}")
             self.driver.add_cookie(new_cookie)
             self.driver.refresh()
         self.main_page = MainPage(self.driver)

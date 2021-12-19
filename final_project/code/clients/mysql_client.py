@@ -32,7 +32,6 @@ class MysqlORMClient:
         url = f'mysql+pymysql://{self.user}:{self.password}@{self.host}:{self.port}/{db}'
 
         self.engine = sqlalchemy.create_engine(url, encoding='utf8')
-        print("TRY TO CONNECT DB")
         self.connection = self.engine.connect()
 
         sm = sessionmaker(bind=self.connection.engine)  # session creation wrapper
@@ -40,16 +39,11 @@ class MysqlORMClient:
 
     def recreate_db(self):
         try:
-            print("TRY RECREATE DB")
             self.connect(db_created=False)
             self.execute_query(f'DROP database if exists {self.db_name}', fetch=False)
             self.execute_query(f'CREATE database {self.db_name}', fetch=False)
-            print("DB RECREATED")
-            # self.execute_query(f"CREATE USER 'test_qa' IDENTIFIED BY 'qa_test'", fetch=False)
-            # self.execute_query(f"GRANT ALL PRIVILEGES ON *.* TO 'test_qa'", fetch=False)
 
         finally:
-            print("DB RECREATED CLOSE CONNECT")
             self.connection.close()
 
     def execute_query(self, query, fetch=True):
@@ -94,15 +88,8 @@ class MysqlORMClient:
     ):
         self.session.commit()
         all_users: TestUsers = self.session.query(TestUsers).filter_by(username=username).all()
-        # TODO разбить метод на 2, один проверят что есть в базке, другой что нет
         res = []
         check_username = len(all_users) == 1
-
-        # if not check_username and user_is_created:
-        #     raise AssertionError("User not created")
-        # if not user_is_created and check_username:
-        #     raise AssertionError("User has bin created")
-
         res.append(check_username)
 
         if password:
@@ -131,13 +118,6 @@ class MysqlORMClient:
             access: int = 1
     ):
         user_data = Builder().user_data(username=username, email=email, password=password, access=access)
-        # if not username:
-        #     username = self.faker.user_name()
-        # if not password:
-        #     password = utils.utils.random_string()
-        # if not email:
-        #     email = self.faker.ascii_email()
-        # print(username, password, email)
         self.insert_data(
             TestUsers,
             username=user_data.username,

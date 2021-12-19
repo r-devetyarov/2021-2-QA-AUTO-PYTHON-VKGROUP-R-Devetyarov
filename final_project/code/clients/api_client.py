@@ -140,7 +140,6 @@ class ApiClient(ApiBase):
         )
         resp = self.welcome_get()
         cookie = resp.request.headers["Cookie"].split("=")
-        print(cookie)
         cookies = {'httpOnly': True, "name": cookie[0], "value": cookie[1]}
         return cookies
 

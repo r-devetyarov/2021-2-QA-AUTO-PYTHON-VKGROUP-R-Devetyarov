@@ -94,5 +94,4 @@ class UiClient:
         for handle in self.driver.window_handles:
             self.driver.switch_to.window(handle)
             urls.append(self.driver.current_url)
-        print(urls)
         return urls

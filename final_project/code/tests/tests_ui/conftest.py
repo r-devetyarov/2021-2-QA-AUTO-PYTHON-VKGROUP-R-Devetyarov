@@ -15,7 +15,6 @@ from ui_pages.pages.login_page import LoginPage
 
 def get_driver(config: dict):
     browser_name = config["browser"]
-    print(browser_name)
 
     if browser_name == 'chrome':
         options = Options()
@@ -26,8 +25,7 @@ def get_driver(config: dict):
             'version': '91.0',
             "enableVNC": True
         }
-        # capabilities['version'] += '_vnc'
-        # capabilities['enableVNC'] = True
+        capabilities['enableVNC'] = True
         browser = webdriver.Remote(
             command_executor='http://selenoid:4444/wd/hub',
             options=options,
