@@ -10,8 +10,6 @@ from utils import utils
 @allure.feature("API tests")
 @allure.story("Tests register user")
 class TestApiRegister(BaseCase):
-    """"
-    """
 
     @allure.title("Registry user with valid data")
     @pytest.mark.parametrize("username_len", [6, 8, 16])
@@ -260,5 +258,25 @@ class TestApiGetStatusApp(BaseCase):
 @pytest.mark.ALL
 @allure.feature("API tests")
 @allure.story("Tests without authorized")
-class TestApiWithoutAuth:
-    ...
+class TestApiWithoutAuth(BaseCase):
+    authorized = False
+
+    @allure.step("Test add user without authorized")
+    def test_add_user_without_auth(self):
+        resp = self.api_client.add_user()
+        assert resp.status_code == 401
+
+    @allure.step("Test delete user without authorized")
+    def test_delete_user_without_auth(self):
+        resp = self.api_client.delete_user(username=utils.random_string())
+        assert resp.status_code == 401
+
+    @allure.step("Test block user without authorized")
+    def test_block_user_without_auth(self):
+        resp = self.api_client.block_user(username=utils.random_string())
+        assert resp.status_code == 401
+
+    @allure.step("Test access user without authorized")
+    def test_access_user_without_auth(self):
+        resp = self.api_client.access_user(username=utils.random_string())
+        assert resp.status_code == 401

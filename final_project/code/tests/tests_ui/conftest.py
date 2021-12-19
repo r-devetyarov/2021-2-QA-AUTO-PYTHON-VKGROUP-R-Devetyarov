@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 
 import allure
 import pytest
@@ -25,7 +24,6 @@ def get_driver(config: dict):
             'version': '91.0',
             "enableVNC": True
         }
-        capabilities['enableVNC'] = True
         browser = webdriver.Remote(
             command_executor='http://selenoid:4444/wd/hub',
             options=options,

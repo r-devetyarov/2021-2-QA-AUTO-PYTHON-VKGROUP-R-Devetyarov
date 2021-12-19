@@ -60,3 +60,4 @@ def run_command(cmd):
         stderr=subprocess.PIPE,
         shell=True
     )
+    return proc

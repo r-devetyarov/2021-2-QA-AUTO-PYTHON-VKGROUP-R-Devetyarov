@@ -6,7 +6,7 @@ import allure
 import faker
 import requests
 
-from constants.app_constants import DefaultUser, ProxyAppConstants
+from constants.app_constants import DefaultUser, ProxyAppConstants, MockConstants
 from constants.constants_web import ConstantsWeb
 from utils.builder import Builder
 from utils.utils import wait
@@ -32,6 +32,7 @@ def wait_ready_app():
         res = get_status_app().json()
         assert res == {"status": "ok"}
         return res
+
     wait(method=check, timeout=20, interval=2, check=True)
 
 
@@ -208,3 +209,9 @@ class ApiClient(ApiBase):
             jsonify=False,
             check_status_code=None
         )
+
+    @staticmethod
+    @allure.step("Add user in mock {username}")
+    def add_user_in_mock(username: str) -> str:
+        resp = requests.get(url=f"{MockConstants.MOCK_URL}/add_user/{username}")
+        return str(resp.json()["vk_id"])

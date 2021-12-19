@@ -1,5 +1,3 @@
-import time
-
 import allure
 import pytest
 
@@ -12,12 +10,10 @@ from utils import utils
 @pytest.mark.UI
 @pytest.mark.ALL
 @allure.feature("UI tests")
+@allure.story("Tests main page")
 class TestUi(BaseCase):
     ''''
     ДОБАВИТЬ:
-    повторное создание юзера с существующим юзернейм
-    повторное создание юзера с существующим емаил
-    при переходе на страницу велком проверку лога браузера - если получится
     логин с пустыми полями
     регистрация с пустыми полями
     регистрация с невалидной длиной пароля
@@ -83,12 +79,33 @@ class TestUi(BaseCase):
         urls = self.main_page.get_list_current_urls()
         assert utils.check_contain_in_list(expected_url_path, urls)
 
+
+@pytest.mark.UI
+@pytest.mark.ALL
+@allure.feature("UI tests")
+@allure.story("Tests current user")
+class TestUiCurrentUser(BaseCase):
+    authorized = False
+
     @allure.title("Test current user")
-    def test_current_user(self):
-        ...
+    def test_current_user_without_vk_id(self, create_user_and_login):
+        user = create_user_and_login
+        assert self.main_page.element_is_presence(self.main_page.locators.current_user_text(text=user.username))
+        assert not self.main_page.element_is_presence(self.main_page.locators.current_user_text(text="VK ID"))
+
     @allure.title("Test current VK ID")
-    def test_current_vk_id(self):
-        ...
+    def test_current_with_vk_id(self, create_user_and_login):
+        user = create_user_and_login
+        vk_id = self.api_client.add_user_in_mock(username=user.username)
+        assert self.main_page.element_is_presence(self.main_page.locators.current_user_text(text=user.username))
+        assert self.main_page.element_is_presence(self.main_page.locators.current_user_text(text=vk_id))
+
+    @allure.title("Test change access from authorized user")
+    def test_change_access_from_auth_user(self, create_user_and_login):
+        user = create_user_and_login
+        self.api_client.block_user(username=user.username)
+        self.main_page.click_by(self.main_page.locators.HOME_BUTTON)
+        assert self.login_page.element_is_presence(self.login_page.locators.LOGIN_BUTTON)
 
 
 @pytest.mark.UI
@@ -179,7 +196,6 @@ class TestUiLogout(BaseCase):
 @pytest.mark.ALL
 @allure.feature("UI tests")
 class TestUiLogin(BaseCase):
-    # TODO добавить проверки с пустыми полями
     authorized = False
 
     @allure.title("Test login valid creds")

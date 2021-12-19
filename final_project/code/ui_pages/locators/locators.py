@@ -11,7 +11,6 @@ class LoginPageLocators:
 
 class RegistrationPageLocators:
     FIELD_INPUT_USERNAME = (By.ID, 'username')
-    # от 6 символов
     FIELD_INPUT_EMAIL = (By.ID, "email")
     FIELD_INPUT_PASSWORD = (By.ID, "password")
     FIELD_CONFIRM_PASSWORD = (By.ID, "confirm")
@@ -39,3 +38,7 @@ class MainPageLocators:
     WIRESHARK_NEWS_BUTTON = (By.XPATH, '//a[@href="https://www.wireshark.org/news/"]')
     WIRESHARK_DOWNLOAD_BUTTON = (By.XPATH, '//a[@href="https://www.wireshark.org/#download"]')
     TCPDUMP_EXAMPLES_BTN = (By.XPATH, '//a[@href="https://hackertarget.com/tcpdump-examples/"]')
+
+    @staticmethod
+    def current_user_text(text: str) -> tuple:
+        return By.XPATH, f'//*[contains(text(), "{text}")]'

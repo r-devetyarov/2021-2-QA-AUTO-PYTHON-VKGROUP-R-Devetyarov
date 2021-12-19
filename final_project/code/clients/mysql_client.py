@@ -79,7 +79,6 @@ class MysqlORMClient:
     def check_user_in_db(
             self,
             username: str,
-            # user_is_created: bool = True,
             password=None,
             email=None,
             access=None,
