@@ -60,4 +60,3 @@ def run_command(cmd):
         stderr=subprocess.PIPE,
         shell=True
     )
-    print(proc.returncode, proc.stdout.decode().strip())
