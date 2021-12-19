@@ -48,7 +48,7 @@ def pytest_configure(config):
 
 def pytest_unconfigure(config):
     utils.utils.run_command("ls -la /tmp/allure/")
-    utils.utils.run_command("chmod 777 /tmp/allure")
+    utils.utils.run_command("chmod -R 777 /tmp/allure")
     utils.utils.run_command("ls -la /tmp/allure/")
 
 
