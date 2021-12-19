@@ -71,7 +71,7 @@ services:
       - "${WORKSPACE}/alluredir:/tmp/allure"
     working_dir: /src
     environment:
-      - MARKS=API
+      - MARKS=ALL
       - THREADS=4
     entrypoint: /bin/bash /src/tests/start_tests.sh
     depends_on:
