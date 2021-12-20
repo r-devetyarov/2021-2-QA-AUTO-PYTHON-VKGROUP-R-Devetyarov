@@ -132,7 +132,11 @@ class TestUiRegistration(BaseCase):
             password=password,
             confirm_password=password
         )
-        assert all(self.mysql.check_user_in_db(username=username, email=user_data[1], password=user_data[2]))
+        assert all(self.mysql.check_user_in_db(
+            username=user_data.username,
+            email=user_data.email,
+            password=user_data.password
+        ))
 
     @allure.title("Test registration invalid username len")
     @pytest.mark.parametrize("username_len", [1, 5, 17, 445])

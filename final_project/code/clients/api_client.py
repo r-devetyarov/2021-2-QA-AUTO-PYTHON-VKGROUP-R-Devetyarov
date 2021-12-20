@@ -120,13 +120,7 @@ class ApiBase:
             **kwargs,
     ):
         url = urljoin(self.base_url, path)
-
-        self.log_pre(url, **kwargs)
-        response = requests.request(
-            method, url, **kwargs
-        )
-        self.log_post(response)
-
+        response = requests.request(method, url, **kwargs)
         return response
 
 
