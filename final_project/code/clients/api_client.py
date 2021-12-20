@@ -113,6 +113,22 @@ class ApiBase:
                 )
         return response
 
+    def send_request(
+            self,
+            method,
+            path,
+            **kwargs,
+    ):
+        url = urljoin(self.base_url, path)
+
+        self.log_pre(url, **kwargs)
+        response = requests.request(
+            method, url, **kwargs
+        )
+        self.log_post(response)
+
+        return response
+
 
 class ApiClient(ApiBase):
 

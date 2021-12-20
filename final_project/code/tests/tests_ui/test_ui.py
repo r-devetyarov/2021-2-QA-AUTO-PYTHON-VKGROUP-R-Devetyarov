@@ -152,7 +152,7 @@ class TestUiRegistration(BaseCase):
         assert self.register_page.element_is_presence(
             self.register_page.locators.INCORRECT_ALERT
         )
-        assert not all(self.mysql.check_user_in_db(username=user[0]))
+        assert not all(self.mysql.check_user_in_db(username=user.username))
 
     @allure.title("Test registration different passwords")
     def test_diff_pass(self):
@@ -160,12 +160,12 @@ class TestUiRegistration(BaseCase):
         assert self.register_page.element_is_presence(
             self.register_page.locators.INCORRECT_ALERT
         )
-        assert not all(self.mysql.check_user_in_db(username=user[0]))
+        assert not all(self.mysql.check_user_in_db(username=user.username))
 
     @allure.title("Test registration don't click on checkbox")
     def test_do_not_click_checkbox(self):
         user = self.register_page.register_user(accept_button=False)
-        assert not all(self.mysql.check_user_in_db(username=user[0]))
+        assert not all(self.mysql.check_user_in_db(username=user.username))
 
     @allure.title("Test registration")
     @pytest.mark.parametrize("email_len", [65, 321])
@@ -173,7 +173,7 @@ class TestUiRegistration(BaseCase):
         email = utils.random_email(size=email_len)
         user = self.register_page.register_user(email=email)
         assert self.register_page.element_is_presence(self.register_page.locators.INCORRECT_ALERT)
-        assert not all(self.mysql.check_user_in_db(username=user[0]))
+        assert not all(self.mysql.check_user_in_db(username=user.username))
 
 
 @pytest.mark.UI

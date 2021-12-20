@@ -264,23 +264,23 @@ class TestApiWithoutAuth(BaseCase):
 
     @allure.step("Test add user without authorized")
     def test_add_user_without_auth(self):
-        resp = self.api_client._request(method='POST', path=ConstantsWeb.ADD_USER_POST, json={}, jsonify=False)
+        resp = self.api_client.send_request(method='POST', path=ConstantsWeb.ADD_USER_POST, json={}, jsonify=False)
         assert resp.status_code == 401
 
     @allure.step("Test delete user without authorized")
     def test_delete_user_without_auth(self):
-        resp = self.api_client._request(method='GET', path=f"{ConstantsWeb.DELETE_USER_GET}{utils.random_string()}",
-                                        jsonify=False)
+        resp = self.api_client.send_request(
+            method='GET',
+            path=f"{ConstantsWeb.DELETE_USER_GET}{utils.random_string()}"
+        )
         assert resp.status_code == 401
 
     @allure.step("Test block user without authorized")
     def test_block_user_without_auth(self):
-        resp = self.api_client._request(method="GET", path=f"{ConstantsWeb.BLOCK_USER_GET}{utils.random_string()}",
-                                        jsonify=False)
+        resp = self.api_client.send_request(method="GET", path=f"{ConstantsWeb.BLOCK_USER_GET}{utils.random_string()}")
         assert resp.status_code == 401
 
     @allure.step("Test access user without authorized")
     def test_access_user_without_auth(self):
-        resp = self.api_client._request(method="GET", path=f"{ConstantsWeb.BLOCK_USER_GET}{utils.random_string()}",
-                                        jsonify=False)
+        resp = self.api_client.send_request(method="GET", path=f"{ConstantsWeb.BLOCK_USER_GET}{utils.random_string()}")
         assert resp.status_code == 401

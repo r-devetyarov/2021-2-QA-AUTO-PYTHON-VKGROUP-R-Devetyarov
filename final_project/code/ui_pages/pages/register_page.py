@@ -49,21 +49,21 @@ class RegisterPage(UiClient):
             password=None,
             confirm_password=None,
             accept_button: bool = True
-    ) -> tuple:
-        builder_user = self.builder.user_data(
+    ):
+        user = self.builder.user_data(
             username=username,
             email=email,
             password=password,
             confirm_password=confirm_password
         )
 
-        self.input_username(builder_user.username)
-        self.input_email(builder_user.email)
-        self.input_password(builder_user.password)
-        self.confirm_password(builder_user.confirm_password)
+        self.input_username(user.username)
+        self.input_email(user.email)
+        self.input_password(user.password)
+        self.confirm_password(user.confirm_password)
 
         if accept_button:
             self.click_accept_button()
 
         self.click_register_button()
-        return username, email, password
+        return user
