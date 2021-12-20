@@ -1,6 +1,7 @@
 import allure
 import pytest
 
+from constants.constants_web import ConstantsWeb
 from tests.tests_api.base import BaseCase
 from utils import utils
 
@@ -263,20 +264,20 @@ class TestApiWithoutAuth(BaseCase):
 
     @allure.step("Test add user without authorized")
     def test_add_user_without_auth(self):
-        resp = self.api_client.add_user()
+        resp = self.api_client._request(method='POST', path=ConstantsWeb.ADD_USER_POST, json={})
         assert resp.status_code == 401
 
     @allure.step("Test delete user without authorized")
     def test_delete_user_without_auth(self):
-        resp = self.api_client.delete_user(username=utils.random_string())
+        resp = self.api_client._request(method='GET', path=f"{ConstantsWeb.DELETE_USER_GET}{utils.random_string()}")
         assert resp.status_code == 401
 
     @allure.step("Test block user without authorized")
     def test_block_user_without_auth(self):
-        resp = self.api_client.block_user(username=utils.random_string())
+        resp = self.api_client.block_user(method="GET", path=f"{ConstantsWeb.BLOCK_USER_GET}{utils.random_string()}")
         assert resp.status_code == 401
 
     @allure.step("Test access user without authorized")
     def test_access_user_without_auth(self):
-        resp = self.api_client.access_user(username=utils.random_string())
+        resp = self.api_client.access_user(method="GET", path=f"{ConstantsWeb.BLOCK_USER_GET}{utils.random_string()}")
         assert resp.status_code == 401
