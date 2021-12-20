@@ -12,13 +12,6 @@ from utils import utils
 @allure.feature("UI tests")
 @allure.story("Tests main page")
 class TestUi(BaseCase):
-    ''''
-    ДОБАВИТЬ:
-    логин с пустыми полями
-    регистрация с пустыми полями
-    регистрация с невалидной длиной пароля
-    логин юзером потом меняем access переход куда-нибудь
-    '''
 
     @pytest.mark.parametrize(
         "page_locator, expected_url_path",
@@ -112,6 +105,7 @@ class TestUiCurrentUser(BaseCase):
 @pytest.mark.UI
 @pytest.mark.ALL
 @allure.feature("UI tests")
+@allure.story("Tests registration")
 class TestUiRegistration(BaseCase):
     authorized = False
 
@@ -183,6 +177,7 @@ class TestUiRegistration(BaseCase):
 @pytest.mark.UI
 @pytest.mark.ALL
 @allure.feature("UI tests")
+@allure.story("Tests logout")
 class TestUiLogout(BaseCase):
     authorized = False
 
@@ -200,6 +195,7 @@ class TestUiLogout(BaseCase):
 @pytest.mark.UI
 @pytest.mark.ALL
 @allure.feature("UI tests")
+@allure.story("Tests login")
 class TestUiLogin(BaseCase):
     authorized = False
 
