@@ -264,7 +264,7 @@ class TestApiWithoutAuth(BaseCase):
 
     @allure.step("Test add user without authorized")
     def test_add_user_without_auth(self):
-        resp = self.api_client.send_request(method='POST', path=ConstantsWeb.ADD_USER_POST, json={}, jsonify=False)
+        resp = self.api_client.send_request(method='POST', path=ConstantsWeb.ADD_USER_POST, json={})
         assert resp.status_code == 401
 
     @allure.step("Test delete user without authorized")
