@@ -48,7 +48,7 @@ class TestApiRegister(BaseCase):
             password=user_data.password,
         ))
 
-    @allure.title("Registry user with duplicate username")
+    @allure.title("Registry user with duplicate email")
     def test_register_duplicate_email(self):
         user_data = self.api_client.builder.user_data()
         self.api_client.add_user(
