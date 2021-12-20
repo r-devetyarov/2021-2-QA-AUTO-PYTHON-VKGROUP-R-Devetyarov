@@ -72,7 +72,7 @@ services:
     working_dir: /src
     environment:
       - MARKS=ALL
-      - THREADS=4
+      - THREADS=2
     entrypoint: /bin/bash /src/tests/start_tests.sh
     depends_on:
       application:
