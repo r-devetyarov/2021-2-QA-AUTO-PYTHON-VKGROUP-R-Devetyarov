@@ -97,6 +97,7 @@ class TestUiCurrentUser(BaseCase):
     def test_current_with_vk_id(self, create_user_and_login):
         user = create_user_and_login
         vk_id = self.api_client.add_user_in_mock(username=user.username)
+        self.main_page.refresh_page()
         assert self.main_page.element_is_presence(self.main_page.locators.current_user_text(text=user.username))
         assert self.main_page.element_is_presence(self.main_page.locators.current_user_text(text=vk_id))
 
