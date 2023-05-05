@@ -35,8 +35,8 @@ services:
     depends_on:
       percona:
         condition: service_healthy
-      vk_mock:
-        condition: service_started
+#      vk_mock:
+#        condition: service_started
     command: /app/myapp --config=/tmp/myappconf
 
   myapp_proxy:
@@ -52,13 +52,13 @@ services:
       application:
         condition: service_started
 
-  vk_mock:
-    networks:
-      - my_networks
-    build: ../vk_api_mock/
-    container_name: "vk_mock"
-    ports:
-      - "5000:5000"
+#  vk_mock:
+#    networks:
+#      - my_networks
+#    build: ../vk_api_mock/
+#    container_name: "vk_mock"
+#    ports:
+#      - "5000:5000"
 
   tests:
     networks:
